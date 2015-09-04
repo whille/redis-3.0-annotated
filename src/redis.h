@@ -70,7 +70,7 @@
 /* 默认的服务器配置值 */
 #define REDIS_DEFAULT_HZ        10      /* Time interrupt calls/sec. */
 #define REDIS_MIN_HZ            1
-#define REDIS_MAX_HZ            500 
+#define REDIS_MAX_HZ            500
 #define REDIS_SERVERPORT        6379    /* TCP port */
 #define REDIS_TCP_BACKLOG       511     /* TCP listen backlog */
 #define REDIS_MAXIDLETIME       0       /* default client timeout: infinite */
@@ -399,20 +399,12 @@ typedef long long mstime_t; /* millisecond time type. */
 #define REDIS_LRU_CLOCK_MAX ((1<<REDIS_LRU_BITS)-1) /* Max value of obj->lru */
 #define REDIS_LRU_CLOCK_RESOLUTION 1000 /* LRU clock resolution in ms */
 typedef struct redisObject {
-
-    // 类型
     unsigned type:4;
-
-    // 编码
     unsigned encoding:4;
-
     // 对象最后一次被访问的时间
     unsigned lru:REDIS_LRU_BITS; /* lru time (relative to server.lruclock) */
-
     // 引用计数
     int refcount;
-
-    // 指向实际值的指针
     void *ptr;
 
 } robj;
@@ -634,7 +626,7 @@ typedef struct redisClient {
     off_t repldboff;        /* replication DB file offset */
     // 主服务器传来的 RDB 文件的大小
     off_t repldbsize;       /* replication DB file size */
-    
+
     sds replpreamble;       /* replication DB preamble. */
 
     // 主服务器的复制偏移量
@@ -714,25 +706,15 @@ struct sharedObjectsStruct {
  * 跳跃表节点
  */
 typedef struct zskiplistNode {
-
-    // 成员对象
     robj *obj;
-
     // 分值
     double score;
-
-    // 后退指针
     struct zskiplistNode *backward;
-
     // 层
     struct zskiplistLevel {
-
-        // 前进指针
         struct zskiplistNode *forward;
-
         // 跨度
         unsigned int span;
-
     } level[];
 
 } zskiplistNode;
@@ -741,23 +723,16 @@ typedef struct zskiplistNode {
  * 跳跃表
  */
 typedef struct zskiplist {
-
-    // 表头节点和表尾节点
     struct zskiplistNode *header, *tail;
-
-    // 表中节点的数量
     unsigned long length;
-
     // 表中层数最大的节点的层数
     int level;
-
 } zskiplist;
 
 /*
  * 有序集合
  */
 typedef struct zset {
-
     // 字典，键为成员，值为分值
     // 用于支持 O(1) 复杂度的按成员取分值操作
     dict *dict;
@@ -790,7 +765,7 @@ extern clientBufferLimitsConfig clientBufferLimitsDefaults[REDIS_CLIENT_LIMIT_NU
  * 它包含指向被执行命令的指针、命令的参数、数据库 ID 、传播目标（REDIS_PROPAGATE_*）。
  *
  * Currently only used to additionally propagate more commands to AOF/Replication
- * after the propagation of the executed command. 
+ * after the propagation of the executed command.
  *
  * 目前只用于在传播被执行命令之后，传播附加的其他命令到 AOF 或 Replication 中。
  */
@@ -1281,7 +1256,7 @@ struct redisServer {
 
     // Lua 环境
     lua_State *lua; /* The Lua interpreter. We use just one for all clients */
-    
+
     // 复制执行 Lua 脚本中的 Redis 命令的伪客户端
     redisClient *lua_client;   /* The "fake client" to query Redis from Lua */
 

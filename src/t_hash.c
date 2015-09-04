@@ -35,13 +35,13 @@
  *----------------------------------------------------------------------------*/
 
 /* Check the length of a number of objects to see if we need to convert a
- * ziplist to a real hash. 
+ * ziplist to a real hash.
  *
  * 对 argv 数组中的多个对象进行检查，
  * 看是否需要将对象的编码从 REDIS_ENCODING_ZIPLIST 转换成 REDIS_ENCODING_HT
  *
  * Note that we only check string encoded objects
- * as their string length can be queried in constant time. 
+ * as their string length can be queried in constant time.
  *
  * 注意程序只检查字符串值，因为它们的长度可以在常数时间内取得。
  */
@@ -63,7 +63,7 @@ void hashTypeTryConversion(robj *o, robj **argv, int start, int end) {
     }
 }
 
-/* Encode given objects in-place when the hash uses a dict. 
+/* Encode given objects in-place when the hash uses a dict.
  *
  * 当 subject 的编码为 REDIS_ENCODING_HT 时，
  * 尝试对对象 o1 和 o2 进行编码，
@@ -77,7 +77,7 @@ void hashTypeTryObjectEncoding(robj *subject, robj **o1, robj **o2) {
 }
 
 /* Get the value from a ziplist encoded hash, identified by field.
- * Returns -1 when the field cannot be found. 
+ * Returns -1 when the field cannot be found.
  *
  * 从 ziplist 编码的 hash 中取出和 field 相对应的值。
  *
@@ -132,7 +132,7 @@ int hashTypeGetFromZiplist(robj *o, robj *field,
 }
 
 /* Get the value from a hash table encoded hash, identified by field.
- * Returns -1 when the field cannot be found. 
+ * Returns -1 when the field cannot be found.
  *
  * 从 REDIS_ENCODING_HT 编码的 hash 中取出和 field 相对应的值。
  *
@@ -204,7 +204,7 @@ robj *hashTypeGetObject(robj *o, robj *field) {
 }
 
 /* Test if the specified field exists in the given hash. Returns 1 if the field
- * exists, and 0 when it doesn't. 
+ * exists, and 0 when it doesn't.
  *
  * 检查给定域 feild 是否存在于 hash 对象 o 中。
  *
@@ -242,7 +242,7 @@ int hashTypeExists(robj *o, robj *field) {
  * 如果 field 已经存在，那么删除旧的值，并关联新值。
  *
  * This function will take care of incrementing the reference count of the
- * retained fields and value objects. 
+ * retained fields and value objects.
  *
  * 这个函数负责对 field 和 value 参数进行引用计数自增。
  *
@@ -293,7 +293,7 @@ int hashTypeSet(robj *o, robj *field, robj *value) {
             zl = ziplistPush(zl, field->ptr, sdslen(field->ptr), ZIPLIST_TAIL);
             zl = ziplistPush(zl, value->ptr, sdslen(value->ptr), ZIPLIST_TAIL);
         }
-        
+
         // 更新对象指针
         o->ptr = zl;
 
@@ -330,7 +330,7 @@ int hashTypeSet(robj *o, robj *field, robj *value) {
  *
  * 将给定 field 及其 value 从哈希表中删除
  *
- * Return 1 on deleted and 0 on not found. 
+ * Return 1 on deleted and 0 on not found.
  *
  * 删除成功返回 1 ，因为域不存在而造成的删除失败返回 0 。
  */
@@ -376,7 +376,7 @@ int hashTypeDelete(robj *o, robj *field) {
     return deleted;
 }
 
-/* Return the number of elements in a hash. 
+/* Return the number of elements in a hash.
  *
  * 返回哈希表的 field-value 对数量
  */
@@ -445,11 +445,11 @@ void hashTypeReleaseIterator(hashTypeIterator *hi) {
     zfree(hi);
 }
 
-/* Move to the next entry in the hash. 
+/* Move to the next entry in the hash.
  *
  * 获取哈希中的下一个节点，并将它保存到迭代器。
  *
- * could be found and REDIS_ERR when the iterator reaches the end. 
+ * could be found and REDIS_ERR when the iterator reaches the end.
  *
  * 如果获取成功，返回 REDIS_OK ，
  *
@@ -506,7 +506,7 @@ int hashTypeNext(hashTypeIterator *hi) {
 }
 
 /* Get the field or value at iterator cursor, for an iterator on a hash value
- * encoded as a ziplist. Prototype is similar to `hashTypeGetFromZiplist`. 
+ * encoded as a ziplist. Prototype is similar to `hashTypeGetFromZiplist`.
  *
  * 从 ziplist 编码的哈希中，取出迭代器指针当前指向节点的域或值。
  */
@@ -533,7 +533,7 @@ void hashTypeCurrentFromZiplist(hashTypeIterator *hi, int what,
 }
 
 /* Get the field or value at iterator cursor, for an iterator on a hash value
- * encoded as a ziplist. Prototype is similar to `hashTypeGetFromHashTable`. 
+ * encoded as a ziplist. Prototype is similar to `hashTypeGetFromHashTable`.
  *
  * 根据迭代器的指针，从字典编码的哈希中取出所指向节点的 field 或者 value 。
  */
@@ -551,13 +551,13 @@ void hashTypeCurrentFromHashTable(hashTypeIterator *hi, int what, robj **dst) {
 }
 
 /* A non copy-on-write friendly but higher level version of hashTypeCurrent*()
- * that returns an object with incremented refcount (or a new object). 
+ * that returns an object with incremented refcount (or a new object).
  *
  * 一个非 copy-on-write 友好，但是层次更高的 hashTypeCurrent() 函数，
  * 这个函数返回一个增加了引用计数的对象，或者一个新对象。
  *
  * It is up to the caller to decrRefCount() the object if no reference is
- * retained. 
+ * retained.
  *
  * 当使用完返回对象之后，调用者需要对对象执行 decrRefCount() 。
  */
@@ -741,7 +741,7 @@ void hsetnxCommand(redisClient *c) {
     hashTypeTryConversion(o,c->argv,2,3);
 
     // 如果 field-value 对已经存在
-    // 那么回复 0 
+    // 那么回复 0
     if (hashTypeExists(o, c->argv[2])) {
         addReply(c, shared.czero);
 

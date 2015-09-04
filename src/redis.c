@@ -83,10 +83,10 @@ struct redisCommand *commandTable;
  *           一个指向命令的实现函数的指针
  *
  * arity: number of arguments, it is possible to use -N to say >= N
- *        参数的数量。可以用 -N 表示 >= N 
+ *        参数的数量。可以用 -N 表示 >= N
  *
  * sflags: command flags as string. See below for a table of flags.
- *         字符串形式的 FLAG ，用来计算以下的真实 FLAG 
+ *         字符串形式的 FLAG ，用来计算以下的真实 FLAG
  *
  * flags: flags as bitmask. Computed by Redis using the 'sflags' field.
  *        位掩码形式的 FLAG ，根据 sflags 的字符串计算得出
@@ -406,7 +406,7 @@ void redisLogFromHandler(int level, const char *msg) {
 
     if ((level&0xff) < server.verbosity || (log_to_stdout && server.daemonize))
         return;
-    fd = log_to_stdout ? STDOUT_FILENO : 
+    fd = log_to_stdout ? STDOUT_FILENO :
                          open(server.logfile, O_APPEND|O_CREAT|O_WRONLY, 0644);
     if (fd == -1) return;
     ll2string(buf,sizeof(buf),getpid());
@@ -727,7 +727,7 @@ void tryResizeHashTables(int dbid) {
  * 为了防止出现这种情况，我们需要对数据库执行主动 rehash 。
  *
  * The function returns 1 if some rehashing was performed, otherwise 0
- * is returned. 
+ * is returned.
  *
  * 函数在执行了主动 rehash 时返回 1 ，否则返回 0 。
  */
@@ -846,7 +846,7 @@ int activeExpireCycleTryExpire(redisDb *db, dictEntry *de, long long now) {
  *
  * If type is ACTIVE_EXPIRE_CYCLE_SLOW, that normal expire cycle is
  * executed, where the time limit is a percentage of the REDIS_HZ period
- * as specified by the REDIS_EXPIRELOOKUPS_TIME_PERC define. 
+ * as specified by the REDIS_EXPIRELOOKUPS_TIME_PERC define.
  *
  * 如果循环的类型为 ACTIVE_EXPIRE_CYCLE_SLOW ，
  * 那么函数会以“正常过期”模式执行，
@@ -891,7 +891,7 @@ void activeExpireCycle(int type) {
      *    当前数据库的数量小于 REDIS_DBCRON_DBS_PER_CALL
      * 2) If last time we hit the time limit, we want to scan all DBs
      * in this iteration, as there is work to do in some DB and we don't want
-     * expired keys to use memory for too much time. 
+     * expired keys to use memory for too much time.
      *     如果上次处理遇到了时间上限，那么这次需要对所有数据库进行扫描，
      *     这可以避免过多的过期键占用空间
      */
@@ -909,7 +909,7 @@ void activeExpireCycle(int type) {
     if (timelimit <= 0) timelimit = 1;
 
     // 如果是运行在快速模式之下
-    // 那么最多只能运行 FAST_DURATION 微秒 
+    // 那么最多只能运行 FAST_DURATION 微秒
     // 默认值为 1000 （微秒）
     if (type == ACTIVE_EXPIRE_CYCLE_FAST)
         timelimit = ACTIVE_EXPIRE_CYCLE_FAST_DURATION; /* in microseconds. */
@@ -955,7 +955,7 @@ void activeExpireCycle(int type) {
                 (num*100/slots < 1)) break;
 
             /* The main collection cycle. Sample random keys among keys
-             * with an expire set, checking for expired ones. 
+             * with an expire set, checking for expired ones.
              *
              * 样本计数器
              */
@@ -993,7 +993,7 @@ void activeExpireCycle(int type) {
             if (ttl_samples) {
                 // 计算当前平均值
                 long long avg_ttl = ttl_sum/ttl_samples;
-                
+
                 // 如果这是第一次设置数据库平均 TTL ，那么进行初始化
                 if (db->avg_ttl == 0) db->avg_ttl = avg_ttl;
                 /* Smooth the value averaging with the previous one. */
@@ -1128,7 +1128,7 @@ int clientsCronHandleTimeout(redisClient *c) {
  *
  * 根据情况，缩小查询缓冲区的大小。
  *
- * The function always returns 0 as it never terminates the client. 
+ * The function always returns 0 as it never terminates the client.
  *
  * 函数总是返回 0 ，因为它不会中止客户端。
  */
@@ -1143,7 +1143,7 @@ int clientsCronResizeQueryBuffer(redisClient *c) {
      * 1) Query buffer is > BIG_ARG and too big for latest peak.
      *    查询缓冲区的大小大于 BIG_ARG 以及 querybuf_peak
      *
-     * 2) Client is inactive and the buffer is bigger than 1k. 
+     * 2) Client is inactive and the buffer is bigger than 1k.
      *    客户端不活跃，并且缓冲区大于 1k 。
      */
     if (((querybuf_size > REDIS_MBULK_BIG_ARG) &&
@@ -1176,7 +1176,7 @@ void clientsCron(void) {
      * 所以在最坏情况下，服务器需要使用 10 秒钟来遍历所有客户端。
      *
      * In normal conditions (a reasonable number of clients) we process
-     * all the clients in a shorter time. 
+     * all the clients in a shorter time.
      *
      * 在一般情况下，遍历所有客户端所需的时间会比实际中短很多。
      */
@@ -1439,7 +1439,7 @@ int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) {
         if ((pid = wait3(&statloc,WNOHANG,NULL)) != 0) {
             int exitcode = WEXITSTATUS(statloc);
             int bysignal = 0;
-            
+
             if (WIFSIGNALED(statloc)) bysignal = WTERMSIG(statloc);
 
             // BGSAVE 执行完毕
@@ -1865,7 +1865,7 @@ void initServerConfig() {
     server.lpushCommand = lookupCommandByCString("lpush");
     server.lpopCommand = lookupCommandByCString("lpop");
     server.rpopCommand = lookupCommandByCString("rpop");
-    
+
     /* Slow log */
     // 初始化慢查询日志
     server.slowlog_log_slower_than = REDIS_SLOWLOG_LOG_SLOWER_THAN;
@@ -2210,7 +2210,7 @@ void initServer() {
 }
 
 /* Populates the Redis Command Table starting from the hard coded list
- * we have on top of redis.c file. 
+ * we have on top of redis.c file.
  *
  * 根据 redis.c 文件顶部的命令列表，创建命令表
  */
@@ -2221,7 +2221,7 @@ void populateCommandTable(void) {
     int numcommands = sizeof(redisCommandTable)/sizeof(struct redisCommand);
 
     for (j = 0; j < numcommands; j++) {
-        
+
         // 指定命令
         struct redisCommand *c = redisCommandTable+j;
 
@@ -2254,7 +2254,7 @@ void populateCommandTable(void) {
         retval1 = dictAdd(server.commands, sdsnew(c->name), c);
 
         /* Populate an additional dictionary that will be unaffected
-         * by rename-command statements in redis.conf. 
+         * by rename-command statements in redis.conf.
          *
          * 将命令也关联到原始命令表
          *
@@ -2352,7 +2352,7 @@ struct redisCommand *lookupCommandByCString(char *s) {
  *
  * This is used by functions rewriting the argument vector such as
  * rewriteClientCommandVector() in order to set client->cmd pointer
- * correctly even if the command was renamed. 
+ * correctly even if the command was renamed.
  *
  * 这个函数可以在命令被更名之后，仍然在重写命令时得出正确的名字。
  */
@@ -2526,7 +2526,7 @@ void call(redisClient *c, int flags) {
  *
  * If 1 is returned the client is still alive and valid and
  * other operations can be performed by the caller. Otherwise
- * if 0 is returned the client was destroyed (i.e. after QUIT). 
+ * if 0 is returned the client was destroyed (i.e. after QUIT).
  *
  * 如果这个函数返回 1 ，那么表示客户端在执行命令之后仍然存在，
  * 调用者可以继续执行其他操作。
@@ -2583,7 +2583,7 @@ int processCommand(redisClient *c) {
      * 1) The sender of this command is our master.
      *    命令的发送者是本节点的主节点
      *
-     * 2) The command has no key arguments. 
+     * 2) The command has no key arguments.
      *    命令没有 key 参数
      */
     if (server.cluster_enabled &&
@@ -2982,7 +2982,7 @@ sds genRedisInfoString(char *section) {
         if (server.cluster_enabled) mode = "cluster";
         else if (server.sentinel_mode) mode = "sentinel";
         else mode = "standalone";
-    
+
         if (sections++) info = sdscat(info,"\r\n");
 
         if (call_uname) {
@@ -3618,11 +3618,11 @@ int freeMemoryIfNeeded(void) {
             if (server.maxmemory_policy == REDIS_MAXMEMORY_ALLKEYS_LRU ||
                 server.maxmemory_policy == REDIS_MAXMEMORY_ALLKEYS_RANDOM)
             {
-                // 如果策略是 allkeys-lru 或者 allkeys-random 
+                // 如果策略是 allkeys-lru 或者 allkeys-random
                 // 那么淘汰的目标为所有数据库键
                 dict = server.db[j].dict;
             } else {
-                // 如果策略是 volatile-lru 、 volatile-random 或者 volatile-ttl 
+                // 如果策略是 volatile-lru 、 volatile-random 或者 volatile-ttl
                 // 那么淘汰的目标为带过期时间的数据库键
                 dict = server.db[j].expires;
             }
@@ -3717,7 +3717,7 @@ int freeMemoryIfNeeded(void) {
                 dbDelete(db,keyobj);
                 delta -= (long long) zmalloc_used_memory();
                 mem_freed += delta;
-                
+
                 // 对淘汰键的计数器增一
                 server.stat_evictedkeys++;
 
@@ -3843,7 +3843,7 @@ static void sigtermHandler(int sig) {
     REDIS_NOTUSED(sig);
 
     redisLogFromHandler(REDIS_WARNING,"Received SIGTERM, scheduling shutdown...");
-    
+
     // 打开关闭标识
     server.shutdown_asap = 1;
 }
